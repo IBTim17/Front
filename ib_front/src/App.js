@@ -1,10 +1,10 @@
 import './App.css';
-import Registration from './components/Registration/Registration.js';
+import CertificateTable from './components/CertificatesTable/CertificatesTable.js';
 
 function App() {
   return (
     <div className="App">
-      <Registration />
+      <CertificateTable />
     </div>
   );
 }
