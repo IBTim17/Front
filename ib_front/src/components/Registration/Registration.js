@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './Registration.css'
 import cert from './cert.png';
+import axios from 'axios';
 
 function Registration() {
   const [firstName, setFirstName] = useState("");
@@ -47,13 +46,29 @@ function Registration() {
     if (showCode) {
       confirm();
     } else {
-      registerUser();
-      setShowCode(true);
+      const user = {
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        password,
+        repeatedPassword: passwordRepeat
+      };
+      registerUser(user)
+        .then(response => {
+          setShowCode(true);
+        })
+        .catch(error => {
+          alert("Registration failed. Please try again.");
+        });
     }
   }
 
-  function registerUser() {
-    // Code to register user with email
+  function registerUser(user) {
+    return axios.post('/register', user)
+    .then(response => {
+      return response.data;
+    });
   }
 
   function confirm() {
