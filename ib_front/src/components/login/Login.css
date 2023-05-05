@@ -113,13 +113,15 @@ form .input-box span.details {
 a:hover {
   cursor: pointer;
 }
-/* .popup {
-  height: 50%;
-  width: 30%;
-  background-color: white;
-  position: absolute;
-  text-align: center;
-} */
+.inline-radio {
+  width: 80%;
+  margin: auto;
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: space-evenly;
+  /* gap: 50px; */
+}
+
 /*.vertical-line {*/
 /*  border-left: 1px solid black;*/
 /*  height: 100px;*/
