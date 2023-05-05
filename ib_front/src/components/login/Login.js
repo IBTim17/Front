@@ -8,7 +8,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [resource, setResource] = useState("Email");
   const [resValue, setResValue] = useState("");
-  const emailPhoneNumPlh = "";
+  const [emailPhoneNumPlh, setEmailPhoneNumPlh] = useState("bob@ros.com");
 
   function handleEmailChange(event) {
     setEmail(event.target.value);
@@ -24,6 +24,12 @@ function Login() {
 
   const onOptionChange = (e) => {
     setResource(e.target.value);
+    console.log(e.target.value);
+    if (e.target.value === "Email") {
+      setEmailPhoneNumPlh("bob@ros.com")
+    } else if (e.target.value === "Phone Number") {
+      setEmailPhoneNumPlh("+381651234567")
+    }
   };
 
   function onCloseModal() {
@@ -101,6 +107,7 @@ function Login() {
         isOpen={isOpen}
         contentLabel="Example Modal"
         onRequestClose={onCloseModal}
+        appElement={document.getElementById('root')}
       >
         <div className="row form" style={{ marginTop: "3em" }}>
           <form onSubmit={sendCode}>
