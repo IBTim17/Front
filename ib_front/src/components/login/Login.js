@@ -1,6 +1,11 @@
 import "./Login.css";
+// import {Routes, Route, useNavigate} from 'react-router-dom';
 import React, { useState } from "react";
 import ReactModal from "react-modal";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+
 
 function Login() {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +14,7 @@ function Login() {
   const [resource, setResource] = useState("Email");
   const [resValue, setResValue] = useState("");
   const [emailPhoneNumPlh, setEmailPhoneNumPlh] = useState("bob@ros.com");
+  const navigate = useNavigate();
 
   function handleEmailChange(event) {
     setEmail(event.target.value);
@@ -44,7 +50,27 @@ function Login() {
 
   function login(event) {
     event.preventDefault();
+    const loginRequest = {
+      email,
+      password
+    };
     
+    loginUser(loginRequest)
+      .then(response => {
+        console.log(response);
+        localStorage.setItem('token', response.token);
+        navigate('/main', { replace: true });
+      })
+      .catch(error => {
+        alert("Sign in failed. Please try again.");
+      });
+  }
+
+  function loginUser(user) {
+    return axios.post('http://localhost:8080/api/user/login', user)
+    .then(response => {
+      return response.data;
+    });
   }
 
   return (
