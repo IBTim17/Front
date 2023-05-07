@@ -1,13 +1,29 @@
 import "./CertificateRequest.css";
 import React, { useState } from "react";
-import Select from "react-select";
+import AsyncSelect from 'react-select/async';
 import ReactModal from "react-modal";
+import getRole from "../../services/AuthService.js";
+import axios from 'axios';
 
 function CertificateRequest() {
   const [type, setType] = useState("Intermediate");
   const [organization, setOrganization] = useState("");
   const [isAdmin, setIsAdmin] = useState(false); //TODO
-  const [selectedOption, setSelectedOption] = useState("");
+  const [issuer, setIssuer] = useState(null);
+  const [isOpen, setIsOpen] = useState(true); //TODO
+
+  const role = getRole();
+
+  let certificates = [];
+  
+  const checkIfAdmin = () => {
+    console.log(role);
+    if (role === 'ADMIN') {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  };
 
   const onOptionChange = (e) => {
     setType(e.target.value);
@@ -18,19 +34,35 @@ function CertificateRequest() {
     setOrganization(event.target.value);
   }
 
+  const onChangeIssuer = (e) => {
+    setIssuer(e.value);
+};
+
   function submitRequest(event) {
     event.preventDefault();
+    console.log(type);
+    console.log(issuer);
+    console.log(organization);
+    let body = {
+      type: type,
+      issuer: issuer,
+      organization: organization
+    }
+    axios.post('http://localhost:8080/api/requests', body, {
+    headers: {
+        'x-auth-token': localStorage.getItem('access_token')
+    }
+    }).then(response => { 
+      alert("Successfully sent the request!");
+    }).catch(error => {alert("Something went wrong. Please try again.");})
   }
 
-  const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-  ]
-
   return (
-    <ReactModal>
-      <div className="form-body">
+    <ReactModal
+        isOpen={isOpen}
+        onAfterOpen={checkIfAdmin}
+        appElement={document.getElementById('root')}>
+      {/* <div className="form-body"> */}
         <form onSubmit={submitRequest}>
           <div className="row form">
             <span className="details">Certificate Type</span>
@@ -41,7 +73,7 @@ function CertificateRequest() {
                   name="type"
                   value="INTERMEDIATE"
                   id="intermediate"
-                  checked={type === "Intermediate"}
+                  checked={type === "INTERMEDIATE"}
                   onChange={onOptionChange}
                 />
                 <label htmlFor="intermediate">Intermediate</label>
@@ -50,9 +82,9 @@ function CertificateRequest() {
                 <input
                   type="radio"
                   name="type"
-                  value="End"
+                  value="END"
                   id="end"
-                  checked={type === "End"}
+                  checked={type === "END"}
                   onChange={onOptionChange}
                 />
                 <label htmlFor="end">End</label>
@@ -62,9 +94,9 @@ function CertificateRequest() {
                   <input
                     type="radio"
                     name="type"
-                    value="Root"
+                    value="ROOT"
                     id="rootCrt"
-                    checked={type === "Root"}
+                    checked={type === "ROOT"}
                     onChange={onOptionChange}
                   />
                   <label htmlFor="root">Root</label>
@@ -73,14 +105,28 @@ function CertificateRequest() {
             </div>
           </div>
           <div className="row form">
-            <span className="details">Certificate Issuer</span>
-            <Select
+            {type != "ROOT" && (<span className="details">Certificate Issuer</span>)}
+            {type != "ROOT" && (<AsyncSelect
               className="basic-single"
               classNamePrefix="select"
               isSearchable="true"
               name="issuer"
-              options={options}
-            />
+              onChange={onChangeIssuer}
+              cacheOptions defaultOptions 
+              loadOptions={options => axios.get('http://localhost:8080/api/certificate', {
+                headers: {
+                    'x-auth-token': localStorage.getItem('access_token')
+                }
+            }).then(response => { 
+              certificates = response.data;
+              console.log(certificates);
+              options = [];
+              for(let crt of certificates) {
+                options.push({ value: crt.serialNumber, label: crt.ownerName + " " + crt.ownerLastName + " " + crt.type });
+              }
+              return options;
+            }).catch(error => console.error('Error fetching certificates: ', error))} 
+            />)}
           </div>
           <div className="row form">
             <div className="input-box">
@@ -100,7 +146,7 @@ function CertificateRequest() {
             </div>
           </div>
         </form>
-      </div>
+      {/* </div> */}
     </ReactModal>
   );
 }

@@ -1,24 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
-import './CertificatesTable.css';
-import getRole from '../../services/AuthService.js';
-import CertificateRequest from '../CertificateRequest/CertificateRequest';
+import './CertificatesTable.css'
 
 class CertificateTable extends React.Component {
     state = {
         certificates: []
     };
-    // const [isOpen, setIsOpen] = useState(false);
-    isOpen = false;
-    
-
-    createCrt() {
-        // const [isOpen, setIsOpen] = useState(false);
-        this.isOpen = true;
-    };
 
     componentDidMount() {
-        // getRole();
         axios.get('/api/certificates', {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token')
@@ -53,12 +42,6 @@ class CertificateTable extends React.Component {
                     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
                 </head>
                 <body>
-                    <span className="table-wrapper">
-                        <button onClick={this.createCrt()}>Add</button>
-                        {this.isOpen && (
-                            <CertificateRequest />
-                        )}
-                    </span>
                     <div class="table-wrapper">
                         <table class="fl-table">
                             <thead>
