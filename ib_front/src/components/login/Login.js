@@ -1,6 +1,9 @@
 import "./Login.css";
 import React, { useState } from "react";
 import ReactModal from "react-modal";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,6 +48,36 @@ function Login() {
   function login(event) {
     event.preventDefault();
     
+    loginUser(loginRequest)
+      .then(response => {
+        // console.log(response);
+        localStorage.setItem('access_token', response.token);
+        navigate('/main', { replace: true });
+      })
+      .catch(error => {
+        alert("Sign in failed. Please try again.");
+      });
+  }
+
+  function loginUser(user) {
+    return axios.post('http://localhost:8080/api/user/login', user)
+    .then(response => {
+      return response.data;
+    });
+  }
+
+  function resetPassword(body) {
+    return axios.post('http://localhost:8080/api/user/resetPassword', body)
+    .then(response => {
+      return response.data;
+    });
+  }
+
+  function putNewPassword(body) {
+    return axios.put('http://localhost:8080/api/user/resetPassword', body)
+    .then(response => {
+      return response.data;
+    });
   }
 
   return (

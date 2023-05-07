@@ -1,6 +1,7 @@
 import "./CertificateRequest.css";
 import React, { useState } from "react";
 import Select from "react-select";
+import ReactModal from "react-modal";
 
 function CertificateRequest() {
   const [type, setType] = useState("Intermediate");
@@ -28,77 +29,79 @@ function CertificateRequest() {
   ]
 
   return (
-    <div className="form-body">
-      <form onSubmit={submitRequest}>
-        <div className="row form">
-          <span className="details">Certificate Type</span>
-          <div className="inline-radio">
-            <span className="radio-gap">
-              <input
-                type="radio"
-                name="type"
-                value="INTERMEDIATE"
-                id="intermediate"
-                checked={type === "Intermediate"}
-                onChange={onOptionChange}
-              />
-              <label htmlFor="intermediate">Intermediate</label>
-            </span>
-            <span className="radio-gap">
-              <input
-                type="radio"
-                name="type"
-                value="End"
-                id="end"
-                checked={type === "End"}
-                onChange={onOptionChange}
-              />
-              <label htmlFor="end">End</label>
-            </span>
-            {isAdmin && (
+    <ReactModal>
+      <div className="form-body">
+        <form onSubmit={submitRequest}>
+          <div className="row form">
+            <span className="details">Certificate Type</span>
+            <div className="inline-radio">
               <span className="radio-gap">
                 <input
                   type="radio"
                   name="type"
-                  value="Root"
-                  id="rootCrt"
-                  checked={type === "Root"}
+                  value="INTERMEDIATE"
+                  id="intermediate"
+                  checked={type === "Intermediate"}
                   onChange={onOptionChange}
                 />
-                <label htmlFor="root">Root</label>
+                <label htmlFor="intermediate">Intermediate</label>
               </span>
-            )}
+              <span className="radio-gap">
+                <input
+                  type="radio"
+                  name="type"
+                  value="End"
+                  id="end"
+                  checked={type === "End"}
+                  onChange={onOptionChange}
+                />
+                <label htmlFor="end">End</label>
+              </span>
+              {isAdmin && (
+                <span className="radio-gap">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="Root"
+                    id="rootCrt"
+                    checked={type === "Root"}
+                    onChange={onOptionChange}
+                  />
+                  <label htmlFor="root">Root</label>
+                </span>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="row form">
-          <span className="details">Certificate Issuer</span>
-          <Select
-            className="basic-single"
-            classNamePrefix="select"
-            isSearchable="true"
-            name="issuer"
-            options={options}
-          />
-        </div>
-        <div className="row form">
-          <div className="input-box">
-            <span className="details">Organization Name</span>
-            <input
-              type="text"
-              placeholder="Organization Name"
-              value={organization}
-              onChange={handleOrganizationChange}
-              required
+          <div className="row form">
+            <span className="details">Certificate Issuer</span>
+            <Select
+              className="basic-single"
+              classNamePrefix="select"
+              isSearchable="true"
+              name="issuer"
+              options={options}
             />
           </div>
-        </div>
-        <div className="row">
-          <div className="button">
-            <input type="submit" value="Send Request" />
+          <div className="row form">
+            <div className="input-box">
+              <span className="details">Organization Name</span>
+              <input
+                type="text"
+                placeholder="Organization Name"
+                value={organization}
+                onChange={handleOrganizationChange}
+                required
+              />
+            </div>
           </div>
-        </div>
-      </form>
-    </div>
+          <div className="row">
+            <div className="button">
+              <input type="submit" value="Send Request" />
+            </div>
+          </div>
+        </form>
+      </div>
+    </ReactModal>
   );
 }
 export default CertificateRequest;
