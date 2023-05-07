@@ -6,7 +6,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
-
 function Login() {
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -104,8 +103,8 @@ function Login() {
     
     loginUser(loginRequest)
       .then(response => {
-        console.log(response);
-        localStorage.setItem('token', response.token);
+        // console.log(response);
+        localStorage.setItem('access_token', response.token);
         navigate('/main', { replace: true });
       })
       .catch(error => {

@@ -1,4 +1,5 @@
 import './App.css';
+import CertificateRequest from './components/CertificateRequest/CertificateRequest';
 import CertificateTable from './components/CertificatesTable/CertificatesTable.js';
 import Registration from './components/Registration/Registration';
 import Login from './components/login/Login.js';
@@ -12,6 +13,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Login />} />
         <Route path="/main" element={<CertificateTable />} />
+        <Route path="/add" element={<CertificateRequest />} />
       </Routes>
     </div>
   );
