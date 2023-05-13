@@ -40,20 +40,28 @@ class CertificateTable extends React.Component {
         headers: {
           "x-auth-token": localStorage.getItem("access_token"),
         },
+        responseType: 'arraybuffer'
       })
       .then((response) => {
         console.log(response);
         try {
-          const file =
-          new Blob([response.data]);
+          console.log(response.headers["content-type"]);
 
-            // read your blob as text
-            const reader = new FileReader();
-            reader.onload = () => {
-              alert(reader.result);
-            };
-            reader.readAsText(file);
-          
+          if (response.headers["content-type"] === "application/zip") {
+            const url = window.URL.createObjectURL(new Blob([response.data],{type:'application/zip'}));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", `${serialNumber}.zip`);
+            document.body.appendChild(link);
+            link.click();
+          } else {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", `${serialNumber}.crt`);
+            document.body.appendChild(link);
+            link.click();
+          }
         } catch (e) {
           console.log(e);
         }
@@ -104,13 +112,19 @@ class CertificateTable extends React.Component {
                     <td>{certificate.ownerLastName}</td>
                     <td>
                       <button
-                        onClick={() => this.handleCheckValidity(certificate.serialNumber)}
+                        onClick={() =>
+                          this.handleCheckValidity(certificate.serialNumber)
+                        }
                       >
                         Check Validity
                       </button>
                     </td>
                     <td>
-                      <button onClick={() => this.downloadCrt(certificate.serialNumber)}>
+                      <button
+                        onClick={() =>
+                          this.downloadCrt(certificate.serialNumber)
+                        }
+                      >
                         Download
                       </button>
                     </td>
