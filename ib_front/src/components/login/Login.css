@@ -128,7 +128,7 @@ a:hover {
 /*}*/
 
 .ReactModal__Content {
-  height: 45%;
+  height: fit-content;
   width: 30%;
   margin: auto;
 }

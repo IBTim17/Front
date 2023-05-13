@@ -1,10 +1,35 @@
 import React from "react";
 import axios from "axios";
 import "./CertificatesTable.css";
+import ReactModal from "react-modal";
 
 class CertificateTable extends React.Component {
-  state = {
-    certificates: [],
+  constructor(props) {
+    super(props);
+    this.state = {
+      certificates: [],
+      showModal: false,
+      reason: "",
+      serialNumber: "",
+    };
+    this.handleRason = this.handleReason.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleReason = (event) => {
+    this.setState({ reason: event.target.value });
+  };
+
+  handleSubmit(event) {
+    event.preventDefault();
+    this.setState({ showModal: false });
+    this.revokeCrt(this.state.serialNumber);
+    this.setState({reason: ""});
+  }
+
+  showModal = (serialNumber) => {
+    this.setState({ showModal: true });
+    this.setState({ serialNumber: serialNumber });
   };
 
   componentDidMount() {
@@ -40,7 +65,7 @@ class CertificateTable extends React.Component {
         headers: {
           "x-auth-token": localStorage.getItem("access_token"),
         },
-        responseType: 'arraybuffer'
+        responseType: "arraybuffer",
       })
       .then((response) => {
         console.log(response);
@@ -48,7 +73,9 @@ class CertificateTable extends React.Component {
           console.log(response.headers["content-type"]);
 
           if (response.headers["content-type"] === "application/zip") {
-            const url = window.URL.createObjectURL(new Blob([response.data],{type:'application/zip'}));
+            const url = window.URL.createObjectURL(
+              new Blob([response.data], { type: "application/zip" })
+            );
             const link = document.createElement("a");
             link.href = url;
             link.setAttribute("download", `${serialNumber}.zip`);
@@ -71,70 +98,99 @@ class CertificateTable extends React.Component {
       );
   };
 
+  revokeCrt = (serialNumber) => {
+    axios
+      .put(
+        `http://localhost:8080/api/certificate/revoke/${serialNumber}`,
+        { reason: this.state.reason },
+        {
+          headers: {
+            "x-auth-token": localStorage.getItem("access_token"),
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        alert(response.data.message);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
+  };
+
   render() {
     return (
-      <html>
-        <head>
-          <title>Registration</title>
-          <meta charset="utf-8"></meta>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1"
-          ></meta>
-          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap"
-          ></link>
-          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-        </head>
-        <body>
-          <div class="table-wrapper">
-            <table class="fl-table">
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Start Date</th>
-                  <th>Email</th>
-                  <th>First name</th>
-                  <th>Last name</th>
-                  <th>Validate</th>
-                  <th>Download</th>
+      <>
+        <div className="table-wrapper">
+          <table className="fl-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Start Date</th>
+                <th>Email</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Validate</th>
+                <th>Download</th>
+                <th>Revoke</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.certificates.map((certificate) => (
+                <tr key={certificate.serialNumber}>
+                  <td>{certificate.type}</td>
+                  <td>{certificate.startDate}</td>
+                  <td>{certificate.ownerEmail}</td>
+                  <td>{certificate.ownerName}</td>
+                  <td>{certificate.ownerLastName}</td>
+                  <td>
+                    <button
+                      onClick={() =>
+                        this.handleCheckValidity(certificate.serialNumber)
+                      }
+                    >
+                      Check Validity
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => this.downloadCrt(certificate.serialNumber)}
+                    >
+                      Download
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => this.showModal(certificate.serialNumber)}
+                    >
+                      Revoke
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {this.state.certificates.map((certificate) => (
-                  <tr key={certificate.serialNumber}>
-                    <td>{certificate.type}</td>
-                    <td>{certificate.startDate}</td>
-                    <td>{certificate.ownerEmail}</td>
-                    <td>{certificate.ownerName}</td>
-                    <td>{certificate.ownerLastName}</td>
-                    <td>
-                      <button
-                        onClick={() =>
-                          this.handleCheckValidity(certificate.serialNumber)
-                        }
-                      >
-                        Check Validity
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        onClick={() =>
-                          this.downloadCrt(certificate.serialNumber)
-                        }
-                      >
-                        Download
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </body>
-      </html>
+              ))}
+            </tbody>
+          </table>
+          <ReactModal
+            isOpen={this.state.showModal}
+            contentLabel="Revoke Reason Modal"
+            appElement={document.getElementById("root")}
+          >
+            <form className="input-box1" onSubmit={this.handleSubmit}>
+              <span className="details">Reason</span>
+              <input
+                type="text"
+                placeholder="Reason for revoking certificate"
+                value={this.state.reason}
+                onChange={this.handleReason}
+                required
+              />
+              <div className="button">
+                <input type="submit" value="Submit" />
+              </div>
+            </form>
+          </ReactModal>
+        </div>
+      </>
     );
   }
 }
