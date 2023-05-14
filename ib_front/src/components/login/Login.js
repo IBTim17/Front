@@ -1,14 +1,14 @@
 import "./Login.css";
-// import {Routes, Route, useNavigate} from 'react-router-dom';
 import React, { useState } from "react";
-// import ReactModal from "react-modal";
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import ResetPassword from "../ResetPassword/ResetPassword";
-
+import ReactModal from "react-modal";
 
 function Login() {
   const [isOpen, setIsOpen] = useState(false);
+  const [openTwoFactor, setOpenTwoFactor] = useState(false);
+  const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -21,31 +21,57 @@ function Login() {
     setPassword(event.target.value);
   }
 
+  function handleCodeChange(event) {
+    setCode(event.target.value);
+  }
+
   function login(event) {
     event.preventDefault();
+    setOpenTwoFactor(true);
     const loginRequest = {
       email,
-      password
+      password,
     };
-    
+
     loginUser(loginRequest)
-      .then(response => {
-        // console.log(response);
-        localStorage.setItem('access_token', response.token);
-        navigate('/main', { replace: true });
+      .then((response) => {
+        localStorage.setItem("access_token", response.token);
       })
-      .catch(error => {
+      .catch((error) => {
         alert("Sign in failed. Please try again.");
       });
   }
 
-  function loginUser(user) {
-    return axios.post('http://localhost:8080/api/user/login', user)
-    .then(response => {
-      return response.data;
-    });
+  function sendCode(event) {
+    event.preventDefault();
+    setOpenTwoFactor(false);
+
+    checkLoginCode(email, code)
+      .then((response) => {
+        console.log(response);
+        if (response.status === 200) navigate("/main", { replace: true });
+        else localStorage.removeItem("access_token");
+      })
+      .catch((error) => {
+        alert(error.data.message);
+      });
   }
 
+  function loginUser(user) {
+    return axios
+      .post("http://localhost:8080/api/user/login", user)
+      .then((response) => {
+        return response.data;
+      });
+  }
+
+  function checkLoginCode(email, code) {
+    return axios
+      .put("http://localhost:8080/api/user/login", { email, code })
+      .then((response) => {
+        return response;
+      });
+  }
 
   return (
     <div className="container-login">
@@ -102,9 +128,32 @@ function Login() {
             </div>
           </div>
         </form>
-        {isOpen && <ResetPassword/>}
+        {isOpen && <ResetPassword />}
+        <ReactModal
+          isOpen={openTwoFactor}
+          contentLabel="Login Code"
+          appElement={document.getElementById("root")}
+        >
+          <form onSubmit={sendCode}>
+            <div className="input-box">
+              <span className="details">Login code</span>
+              <input
+                style={{ width: "95%" }}
+                type="text"
+                placeholder="Login code"
+                value={code}
+                onChange={handleCodeChange}
+                required
+              />
+            </div>
+            <div style={{ marginTop: "1em" }}>
+              <div className="button">
+                <input type="submit" value="Submit" />
+              </div>
+            </div>
+          </form>
+        </ReactModal>
       </div>
-      
     </div>
   );
 }
