@@ -53,6 +53,7 @@ function Login() {
         else localStorage.removeItem("access_token");
       })
       .catch((error) => {
+        localStorage.removeItem("access_token");
         alert(error.data.message);
       });
   }
