@@ -132,3 +132,7 @@ a:hover {
   width: 30%;
   margin: auto;
 }
+
+label {
+  margin-left: 1em;
+}

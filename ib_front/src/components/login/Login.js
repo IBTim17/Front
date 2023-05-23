@@ -11,6 +11,7 @@ function Login() {
   const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [type, setType] = useState("EMAIL");
   const navigate = useNavigate();
 
   function handleEmailChange(event) {
@@ -25,12 +26,18 @@ function Login() {
     setCode(event.target.value);
   }
 
+  const onOptionChange = (e) => {
+    setType(e.target.value);
+    console.log(e.target.value);
+  };
+
   function login(event) {
     event.preventDefault();
     setOpenTwoFactor(true);
     const loginRequest = {
-      email,
-      password,
+      email: email,
+      password: password,
+      resource: type
     };
 
     loginUser(loginRequest)
@@ -123,6 +130,32 @@ function Login() {
           <a className="right" onClick={() => setIsOpen(true)}>
             Forgot password?
           </a>
+          <div className="row form">
+            <div className="inline-radio">
+              <span className="radio-gap">
+                <input
+                  type="radio"
+                  name="type"
+                  value="EMAIL"
+                  id="email"
+                  checked={type === "EMAIL"}
+                  onChange={onOptionChange}
+                />
+                <label htmlFor="email">Email</label>
+              </span>
+              <span className="radio-gap">
+                <input
+                  type="radio"
+                  name="type"
+                  value="PHONE_NUMBER"
+                  id="phoneNumber"
+                  checked={type === "PHONE_NUMBER"}
+                  onChange={onOptionChange}
+                />
+                <label htmlFor="phoneNumber">Phone number</label>
+              </span>
+            </div>
+          </div>
           <div className="row">
             <div className="button">
               <input type="submit" value="Sign in" />
