@@ -5,29 +5,9 @@ import CertificateTable from "./components/CertificatesTable/CertificatesTable.j
 import Registration from "./components/Registration/Registration";
 import Login from "./components/login/Login.js";
 import { Routes, Route, Navigate } from "react-router-dom";
-import logout from "./services/AuthService";
-import AuthVerify from "./common/auth-verify";
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.logOut = this.logOut.bind(this);
-
-    this.state = {
-      showModeratorBoard: false,
-      showAdminBoard: false,
-      currentUser: undefined,
-    };
-  }
-  logOut() {
-    logout();
-    this.setState({
-      showModeratorBoard: false,
-      showAdminBoard: false,
-      currentUser: undefined,
-    });
-  }
-
+  
   render() {
     return (
       <>
@@ -40,7 +20,6 @@ class App extends React.Component {
             <Route path="/add" element={<CertificateRequest />} />
           </Routes>
         </div>
-        <AuthVerify logOut={this.logOut} />
       </>
     );
   }

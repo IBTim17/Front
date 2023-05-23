@@ -41,7 +41,7 @@ class CertificateTable extends React.Component {
       })
       .then((response) => this.setState({ certificates: response.data }))
       .catch((error) => {
-        console.error("Error fetching certificates: ", error);
+        // console.log("Error fetching certificates: ", error);
         if (error.response.status === 401) {
           localStorage.removeItem("access_token");
           window.location.replace("/login");
