@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import "./CertificatesTable.css";
 import ReactModal from "react-modal";
+import CertificateRequest from "../CertificateRequest/CertificateRequest";
 
 class CertificateTable extends React.Component {
   constructor(props) {
@@ -11,8 +12,8 @@ class CertificateTable extends React.Component {
       showModal: false,
       reason: "",
       serialNumber: "",
+      isOpenAddModal: false,
     };
-    this.handleRason = this.handleReason.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -24,12 +25,17 @@ class CertificateTable extends React.Component {
     event.preventDefault();
     this.setState({ showModal: false });
     this.revokeCrt(this.state.serialNumber);
-    this.setState({reason: ""});
+    this.setState({ reason: "" });
   }
 
   showModal = (serialNumber) => {
     this.setState({ showModal: true });
     this.setState({ serialNumber: serialNumber });
+  };
+
+  openAddModal = (event) => {
+    this.setState({ isOpenAddModal: true});
+    console.log(this.state.isOpenAddModal);
   };
 
   componentDidMount() {
@@ -122,6 +128,12 @@ class CertificateTable extends React.Component {
     return (
       <>
         <div className="table-wrapper">
+          <button
+            id="addBtn" onClick={() => {
+              this.openAddModal();
+            }}
+          >Add</button>
+          {this.state.isOpenAddModal && <CertificateRequest></CertificateRequest>}
           <table className="fl-table">
             <thead>
               <tr>

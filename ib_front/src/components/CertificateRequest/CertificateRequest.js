@@ -4,13 +4,15 @@ import AsyncSelect from 'react-select/async';
 import ReactModal from "react-modal";
 import getRole from "../../services/AuthService.js";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function CertificateRequest() {
-  const [type, setType] = useState("Intermediate");
+  const [type, setType] = useState("INTERMEDIATE");
   const [organization, setOrganization] = useState("");
   const [isAdmin, setIsAdmin] = useState(false); //TODO
   const [issuer, setIssuer] = useState(null);
   const [isOpen, setIsOpen] = useState(true); //TODO
+  const navigate = useNavigate();
 
   const role = getRole();
 
@@ -38,6 +40,11 @@ function CertificateRequest() {
     setIssuer(e.value);
 };
 
+  const handleCloseModal = () => {
+    setIsOpen(false);
+    navigate(0);
+  }
+
   function submitRequest(event) {
     event.preventDefault();
     console.log(type);
@@ -54,6 +61,8 @@ function CertificateRequest() {
     }
     }).then(response => { 
       alert("Successfully sent the request!");
+      setIsOpen(false);
+
     }).catch(error => {alert("Something went wrong. Please try again.");})
   }
 
@@ -61,6 +70,8 @@ function CertificateRequest() {
     <ReactModal
         isOpen={isOpen}
         onAfterOpen={checkIfAdmin}
+        onRequestClose={handleCloseModal}
+        shouldCloseOnOverlayClick={true}
         appElement={document.getElementById('root')}>
       {/* <div className="form-body"> */}
         <form onSubmit={submitRequest}>
