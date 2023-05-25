@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [isOpen, setIsOpen] = useState(false);
+  const [renewal, setRenawal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [resource, setResource] = useState("Email");
@@ -55,6 +56,7 @@ function Login() {
 
   function onCloseModal() {
     setIsOpen(false);
+    setRenawal(false);
     setResValue("");
     setCode("");
     setNewPassword("");
@@ -108,7 +110,13 @@ function Login() {
         navigate('/main', { replace: true });
       })
       .catch(error => {
+        console.log(error.response.data);
+        if(error.response.data === "Password needs renewal!") {
+          setRenawal(true);
+          alert(error.response.data);
+        } else {
         alert("Sign in failed. Please try again.");
+        }
       });
   }
 
@@ -197,6 +205,120 @@ function Login() {
       >
         {!sentCode && (
         <div className="row form">
+          <form onSubmit={sendCode}>
+            <div className="inline-radio">
+              <span className="radio-gap">
+                <input
+                  type="radio"
+                  name="resource"
+                  value="Email"
+                  id="email"
+                  checked={resource === "Email"}
+                  onChange={onOptionChange}
+                />
+                <label htmlFor="email">Email</label>
+              </span>
+              <span className="radio-gap">
+                <input
+                  type="radio"
+                  name="resource"
+                  value="Phone Number"
+                  id="phoneNumber"
+                  checked={resource === "Phone Number"}
+                  onChange={onOptionChange}
+                />
+                <label htmlFor="medium">Phone Number</label>
+              </span>
+            </div>
+
+            <div className="input-box">
+              <span className="details">{resource}</span>
+              <input
+                style={{ width: "95%" }}
+                type="text"
+                placeholder={emailPhoneNumPlh}
+                value={resValue}
+                onChange={handleRecourceChange}
+                required
+              />
+            </div>
+            <div style={{ marginTop: "3em" }}>
+              <div className="button">
+                <input type="submit" value="Send Code" />
+              </div>
+            </div>
+          </form>
+        </div>
+        )}
+        {sentCode && (
+          <div className="row form" style={{ marginTop: "3em" }}>
+          <form onSubmit={sendNewPassword}>
+            <div className="input-box">
+              <span className="details">Email</span>
+              <input
+                style={{ width: "95%" }}
+                type="email"
+                placeholder="bob@ros.com"
+                value={resValue}
+                onChange={handleRecourceChange}
+                required
+              />
+            </div>
+            <div className="input-box">
+              <span className="details">Reset code</span>
+              <input
+                style={{ width: "95%" }}
+                type="text"
+                placeholder="Reset code"
+                value={code}
+                onChange={handleCodeChange}
+                required
+              />
+            </div>
+            <div className="row">
+                <div className="col-sm-6" style={{ width: "46%" }}>
+                  <div className="input-box">
+                    <span className="details">New Password</span>
+                    <input
+                      type="password"
+                      placeholder="********"
+                      value={newPassword}
+                      onChange={handleNewPasswordChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-sm-6" style={{ width: "46%" }}>
+                  <div className="input-box">
+                    <span className="details">Repeat password</span>
+                    <input
+                      type="password"
+                      placeholder="********"
+                      value={passwordRepeat}
+                      onChange={handlePasswordRepeatChange}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            <div style={{ marginTop: "1em" }}>
+              <div className="button">
+                <input type="submit" value="Reset Password" />
+              </div>
+            </div>
+          </form>
+        </div>
+        )}
+      </ReactModal>
+      <ReactModal
+        isOpen={renewal}
+        contentLabel="Example Modal"
+        onRequestClose={onCloseModal}
+        appElement={document.getElementById('root')}
+      >
+        {!sentCode && (
+        <div className="row form">
+          <p className="title">Password renewal - 90. days passed</p>
           <form onSubmit={sendCode}>
             <div className="inline-radio">
               <span className="radio-gap">
