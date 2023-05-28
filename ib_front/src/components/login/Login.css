@@ -132,3 +132,9 @@ a:hover {
   width: 30%;
   margin: auto;
 }
+
+.title{
+  margin: auto;
+  text-align: center;
+  font-size: 20px;
+}
