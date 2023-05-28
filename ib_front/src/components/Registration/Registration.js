@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Registration.css'
 import cert from './cert.png';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Registration() {
   const [firstName, setFirstName] = useState("");
@@ -12,6 +13,7 @@ function Registration() {
   const [passwordRepeat, setPasswordRepeat] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [showCode, setShowCode] = useState(false);
+  const navigate = useNavigate();
 
   function handleEmailChange(event) {
     setEmail(event.target.value);
@@ -54,6 +56,7 @@ function Registration() {
         password,
         repeatedPassword: passwordRepeat
       };
+      console.log(user);
       registerUser(user)
         .then(response => {
           setShowCode(true);
@@ -65,19 +68,24 @@ function Registration() {
   }
 
   function registerUser(user) {
-    return axios.post('/register', user)
+    return axios.post('http://localhost:8080/api/user/register', user)
     .then(response => {
       return response.data;
     });
   }
 
   function confirm() {
-    // Code to confirm user's verification code
+    return axios.put('http://localhost:8080/api/user/confirm', {email, code: verificationCode})
+    .then(response => {
+      navigate('/main', { replace: true });
+      return response.data;
+    }).catch(error => {
+      alert("Code not correct!");
+    });
   }
 
   return (
     <html lang="en">
-
       <head>
         <title>Registration</title>
         <meta charset="utf-8"></meta>

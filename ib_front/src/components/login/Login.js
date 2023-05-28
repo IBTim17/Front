@@ -87,7 +87,7 @@ function Login() {
     putNewPassword(codeRequest)
       .then(response => {
         console.log(response);
-        alert("Successfully chenged password!");
+        alert("Successfully changed password!");
         setSentCode(false);
         setIsOpen(false);
       })
