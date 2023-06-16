@@ -15,6 +15,11 @@ class CertificateTable extends React.Component {
       isOpenAddModal: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    const queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.has("token") && queryParams.has("refresh_token")) {
+      localStorage.setItem('access_token', queryParams.get("token"));
+      localStorage.setItem('refresh_token',queryParams.get("refresh_token"))
+    }
   }
 
   handleReason = (event) => {

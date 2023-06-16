@@ -59,7 +59,7 @@ function Registration() {
         if (valid_token) {
           setMessage("Hurray!! you have submitted the form");
           console.log(token);
-          
+
           const user = {
             firstName,
             lastName,

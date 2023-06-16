@@ -166,6 +166,17 @@ function Login() {
       });
   }
 
+  function loginUser(user) {
+    return axios.post('http://localhost:8080/api/user/login', user)
+    .then(response => {
+      return response.data;
+    });
+  }
+
+  function signInWithGoogle() {
+    window.location.href = window.location.href = "http://localhost:8080/oauth2/authorization/google?redirect_uri=http://localhost:3000/main"
+  }
+
   function resetPassword(body) {
     return axios
       .post("http://localhost:8080/api/user/resetPassword", body)
@@ -237,7 +248,10 @@ function Login() {
               ref={captchaRef}
             />
             <div className="button">
-              <input type="submit" value="Sign in" disabled={isVerified} />
+              <input type="submit" value="Sign in" />
+            </div>
+            <div className="button">
+              <input  onClick={() => signInWithGoogle()} value="Continue with google" />
             </div>
           </div>
         </form>
