@@ -38,6 +38,11 @@ class CertificateTable extends React.Component {
     console.log(this.state.isOpenAddModal);
   };
 
+  logout = (event) => {
+    localStorage.removeItem("access_token");
+    window.location.replace("/login");
+  };
+
   componentDidMount() {
     axios
       .get("http://localhost:8080/api/certificate", {
@@ -133,6 +138,11 @@ class CertificateTable extends React.Component {
               this.openAddModal();
             }}
           >Add</button>
+          <button style={{marginLeft: "15px"}}
+            id="addBtn" onClick={() => {
+              this.logout();
+            }}
+          >Logout</button>
           {this.state.isOpenAddModal && <CertificateRequest></CertificateRequest>}
           <table className="fl-table">
             <thead>
