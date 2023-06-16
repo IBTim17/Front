@@ -127,6 +127,10 @@ function Login() {
     });
   }
 
+  function signInWithGoogle() {
+    window.location.href = window.location.href = "http://localhost:8080/oauth2/authorization/google?redirect_uri=http://localhost:3000/main"
+  }
+
   function resetPassword(body) {
     return axios.post('http://localhost:8080/api/user/resetPassword', body)
     .then(response => {
@@ -193,6 +197,9 @@ function Login() {
           <div className="row">
             <div className="button">
               <input type="submit" value="Sign in" />
+            </div>
+            <div className="button">
+              <input  onClick={() => signInWithGoogle()} value="Continue with google" />
             </div>
           </div>
         </form>
