@@ -4,6 +4,7 @@ import CertificateTable from './components/CertificatesTable/CertificatesTable.j
 import Registration from './components/Registration/Registration';
 import Login from './components/login/Login.js';
 import { Routes, Route } from 'react-router-dom';
+import ValidateCertificateCopy from "./components/ValidateCertificateCopy/ValidateCertificateCopy.js";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Login />} />
         <Route path="/main" element={<CertificateTable />} />
+          <Route path="/validatecopy" element={<ValidateCertificateCopy/>}/>
       </Routes>
     </div>
   );
