@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c128ddd-e46f-4356-afe4-c8e3d0f4269a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/AllCertificateRequests/AllCertificateRequests.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/AllCertificateRequests/AllCertificateRequests.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/AllRequestsUser/AllRequestsUser.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/AllRequestsUser/AllRequestsUser.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ValidateCertificateCopy/ValidateCertificateCopy.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ValidateCertificateCopy/ValidateCertificateCopy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/AllCertificateRequests/AllCertificateRequests.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AllCertificateRequests/AllCertificateRequests.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CertificatesTable/CertificatesTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CertificatesTable/CertificatesTable.js" afterDir="false" />
     </list>
     <list id="53389539-0c45-4d05-9ac7-27faefbbf5fe" name="Changes by Mijan" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -69,7 +65,7 @@
       <workItem from="1683392366583" duration="906000" />
       <workItem from="1685191373014" duration="1136000" />
       <workItem from="1686920633634" duration="10107000" />
-      <workItem from="1686986392883" duration="391000" />
+      <workItem from="1686986392883" duration="3258000" />
     </task>
     <servers />
   </component>

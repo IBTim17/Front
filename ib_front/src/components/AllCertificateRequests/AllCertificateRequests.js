@@ -3,32 +3,83 @@ import "./AllCertificateRequests.css";
 import CertificateRequest from "../CertificateRequest/CertificateRequest";
 import ReactModal from "react-modal";
 import {render} from "@testing-library/react";
+import axios from "axios";
 
-function AllCertificateRequests() {
-    const [certificates, setCertificates] = useState([]);
-    const [showDeclineReason, setShowDeclineReason] = useState(false);
-    const [requestForm, setRequestForm] = useState({
-        id: '',
-        reason: '',
-    });
-    const [hasError, setHasError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const hasLoaded = true; // Replace with your actual logic for determining if the component has loaded
+class AllCertificateRequests extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            certificateRequests: [],
+            reason:''
+        };
+        //this.handleSubmit = this.handleSubmit.bind(this);
+        const queryParams = new URLSearchParams(window.location.search);
+        if (queryParams.has("token") && queryParams.has("refresh_token")) {
+            localStorage.setItem('access_token', queryParams.get("token"));
+            localStorage.setItem('refresh_token',queryParams.get("refresh_token"))
+        }
+    }
 
-    const showRequest = (certificate) => {
-        // Implement the logic for showing the request details
+    componentDidMount() {
+        this.fetchCertificateRequests();
+    }
+
+    fetchCertificateRequests() {
+        axios
+            .get("http://localhost:8080/api/list-all", {
+                headers: {
+                    "x-auth-token": localStorage.getItem("access_token"),
+                },
+            })
+            .then((response) => this.setState({ certificateRequests: response.data }))
+            .catch((error) => {
+                // console.log("Error fetching certificates: ", error);
+                if (error.response.status === 401) {
+                    //localStorage.removeItem("access_token");
+                    window.location.replace("/");
+                }
+            });
+    }
+
+    acceptCSR = (serialNumber) => {
+        axios
+            .put(`http://localhost:8080/api/certificate/approve/${serialNumber}`, {
+                headers: {
+                    "x-auth-token": localStorage.getItem("access_token"),
+                },
+            })
+            .then((response) => {
+                const approved = response.data;
+                alert(approved)
+            })
+            .catch((error) => {
+                console.error(`Error approving certificate: ${error}`);
+                if (error.response.status === 401) {
+                    localStorage.removeItem("access_token");
+                    window.location.replace("/login");
+                }
+            });
     };
 
-    const acceptDecline = () => {
-        // Implement the logic for accepting or declining the request
-    };
-
-    const acceptPressed = () => {
-        // Implement the logic when the accept button is pressed
-    };
-
-    const declinePressed = () => {
-        // Implement the logic when the decline button is pressed
+    declineCSR = (serialNumber) => {
+        axios
+            .put(`http://localhost:8080/api/certificate/decline/${serialNumber}`, {
+                headers: {
+                    "x-auth-token": localStorage.getItem("access_token"),
+                },
+            })
+            .then((response) => {
+                const declined = response.data;
+                alert(declined)
+                //alert(valid ? "Certificate is valid!" : "Certificate is invalid!");
+            })
+            .catch((error) => {
+                console.error(`Error declining certificate: ${error}`);
+                if (error.response.status === 401) {
+                    localStorage.removeItem("access_token");
+                    window.location.replace("/login");
+                }
+            });
     };
 
     render()
@@ -48,7 +99,7 @@ function AllCertificateRequests() {
                     }}
                     >Logout
                     </button>
-                    {this.state.isOpenAddModal && <CertificateRequest></CertificateRequest>}
+                    {/*{this.state.isOpenAddModal && <CertificateRequest></CertificateRequest>}*/}
                     <table className="fl-table">
                         <thead>
                         <tr>
@@ -57,65 +108,36 @@ function AllCertificateRequests() {
                             <th>Email</th>
                             <th>First name</th>
                             <th>Last name</th>
-                            <th>Validate</th>
-                            <th>Download</th>
-                            <th>Revoke</th>
+                            <th>Accept</th>
+                            <th>Decline</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {this.state.certificates.map((certificate) => (
-                            <tr key={certificate.serialNumber}>
-                                <td>{certificate.type}</td>
-                                <td>{certificate.startDate}</td>
-                                <td>{certificate.ownerEmail}</td>
-                                <td>{certificate.ownerName}</td>
-                                <td>{certificate.ownerLastName}</td>
+                        {this.state.certificateRequests.map((certificateRequest) => (
+                            <tr key={certificateRequest.serialNumber}>
+                                <td>{certificateRequest.type}</td>
+                                <td>{certificateRequest.startDate}</td>
+                                <td>{certificateRequest.ownerEmail}</td>
+                                <td>{certificateRequest.ownerName}</td>
+                                <td>{certificateRequest.ownerLastName}</td>
                                 <td>
                                     <button
-                                        onClick={() =>
-                                            this.handleCheckValidity(certificate.serialNumber)
-                                        }
+                                        onClick={() => this.acceptCSR(certificateRequest.serialNumber)}
                                     >
-                                        Check Validity
+                                        Accept
                                     </button>
                                 </td>
                                 <td>
                                     <button
-                                        onClick={() => this.downloadCrt(certificate.serialNumber)}
+                                        onClick={() => this.declineCSR(certificateRequest.serialNumber)}
                                     >
-                                        Download
-                                    </button>
-                                </td>
-                                <td>
-                                    <button
-                                        onClick={() => this.showModal(certificate.serialNumber)}
-                                    >
-                                        Revoke
+                                        Decline
                                     </button>
                                 </td>
                             </tr>
                         ))}
                         </tbody>
                     </table>
-                    <ReactModal
-                        isOpen={this.state.showModal}
-                        contentLabel="Revoke Reason Modal"
-                        appElement={document.getElementById("root")}
-                    >
-                        <form className="input-box1" onSubmit={this.handleSubmit}>
-                            <span className="details">Reason</span>
-                            <input
-                                type="text"
-                                placeholder="Reason for revoking certificate"
-                                value={this.state.reason}
-                                onChange={this.handleReason}
-                                required
-                            />
-                            <div className="button">
-                                <input type="submit" value="Submit"/>
-                            </div>
-                        </form>
-                    </ReactModal>
                 </div>
             </>
         );
