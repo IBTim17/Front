@@ -22,6 +22,11 @@ function Login() {
   const [resValue, setResValue] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
+  
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const phoneRegex = /^\d{10}$/;
+
   const [emailPhoneNumPlh, setEmailPhoneNumPlh] = useState("bob@ros.com");
   const [sentCode, setSentCode] = useState(false);
 
@@ -77,6 +82,17 @@ function Login() {
           password: password,
           resource: type
         };
+         if (!emailRegex.test(email)) {
+            alert('Please enter a valid email address.');
+            return;
+          }
+
+          if (!passwordRegex.test(password)) {
+            alert(
+              'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+            );
+            return;
+          }
 
         loginUser(loginRequest)
           .then((response) => {
@@ -122,6 +138,16 @@ function Login() {
     event.preventDefault();
     const codeRequest = { resource: resValue };
 
+    if (resource === 'Email' && !emailRegex.test(resValue)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+
+    if (resource === 'Phone Number' && !phoneRegex.test(resValue)) {
+      alert('Please enter a valid phone number (10 digits).');
+      return;
+    }
+
     resetPassword(codeRequest)
       .then((response) => {
         console.log(response);
@@ -150,10 +176,18 @@ function Login() {
 
   function sendNewPassword(event) {
     event.preventDefault();
-    if (newPassword !== passwordRepeat) {
-      alert("Passwords don't match!");
+    if (!passwordRegex.test(newPassword)) {
+      alert(
+        'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+      );
       return;
     }
+
+    if (newPassword !== passwordRepeat) {
+      alert('Passwords do not match.');
+      return;
+    }
+
     const codeRequest = { email, code, newPassword };
 
     putNewPassword(codeRequest)
