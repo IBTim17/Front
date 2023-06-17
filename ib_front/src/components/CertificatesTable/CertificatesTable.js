@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import "./CertificatesTable.css";
 import ReactModal from "react-modal";
+import CertificateRequest from "../CertificateRequest/CertificateRequest";
 
 class CertificateTable extends React.Component {
   constructor(props) {
@@ -11,9 +12,14 @@ class CertificateTable extends React.Component {
       showModal: false,
       reason: "",
       serialNumber: "",
+      isOpenAddModal: false,
     };
-    this.handleRason = this.handleReason.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    const queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.has("token") && queryParams.has("refresh_token")) {
+      localStorage.setItem('access_token', queryParams.get("token"));
+      localStorage.setItem('refresh_token',queryParams.get("refresh_token"))
+    }
   }
 
   handleReason = (event) => {
@@ -30,6 +36,16 @@ class CertificateTable extends React.Component {
   showModal = (serialNumber) => {
     this.setState({ showModal: true });
     this.setState({ serialNumber: serialNumber });
+  };
+
+  openAddModal = (event) => {
+    this.setState({ isOpenAddModal: true});
+    console.log(this.state.isOpenAddModal);
+  };
+
+  logout = (event) => {
+    localStorage.removeItem("access_token");
+    window.location.replace("/login");
   };
 
   componentDidMount() {
@@ -142,6 +158,17 @@ class CertificateTable extends React.Component {
     return (
       <>
         <div className="table-wrapper">
+          <button
+            id="addBtn" onClick={() => {
+              this.openAddModal();
+            }}
+          >Add</button>
+          <button style={{marginLeft: "15px"}}
+            id="addBtn" onClick={() => {
+              this.logout();
+            }}
+          >Logout</button>
+          {this.state.isOpenAddModal && <CertificateRequest></CertificateRequest>}
           <table className="fl-table">
             <thead>
               <tr>

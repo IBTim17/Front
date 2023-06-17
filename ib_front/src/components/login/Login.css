@@ -136,3 +136,8 @@ a:hover {
 label {
   margin-left: 1em;
 }
+.title{
+  margin: auto;
+  text-align: center;
+  font-size: 20px;
+}
