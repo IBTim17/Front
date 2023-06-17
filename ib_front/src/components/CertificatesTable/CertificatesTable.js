@@ -217,25 +217,6 @@ class CertificateTable extends React.Component {
               ))}
             </tbody>
           </table>
-          <ReactModal
-            isOpen={this.state.showModal}
-            contentLabel="Revoke Reason Modal"
-            appElement={document.getElementById("root")}
-          >
-            <form className="input-box1" onSubmit={this.handleSubmit}>
-              <span className="details">Reason</span>
-              <input
-                type="text"
-                placeholder="Reason for revoking certificate"
-                value={this.state.reason}
-                onChange={this.handleReason}
-                required
-              />
-              <div className="button">
-                <input type="submit" value="Submit" />
-              </div>
-            </form>
-          </ReactModal>
         </div>
       </>
     );
