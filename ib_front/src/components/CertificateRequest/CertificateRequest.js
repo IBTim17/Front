@@ -5,6 +5,7 @@ import ReactModal from "react-modal";
 import getRole from "../../services/AuthService.js";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import jwt from 'jwt-decode';
 
 function CertificateRequest() {
   const [type, setType] = useState("INTERMEDIATE");
@@ -14,11 +15,20 @@ function CertificateRequest() {
   const [isOpen, setIsOpen] = useState(true); //TODO
   const navigate = useNavigate();
 
-  const role = getRole();
+  // const role = getRole();
+  let role;
 
   let certificates = [];
   
   const checkIfAdmin = () => {
+
+    const jwtoken = localStorage.getItem('access_token');
+    const token = jwt(jwtoken);
+    console.log(token);
+    role = token.role[0].authority;
+
+    // console.log(localStorage.getItem('access_token'));
+    // const role = getRole();
     console.log(role);
     if (role === 'ADMIN') {
       setIsAdmin(true);
@@ -116,8 +126,8 @@ function CertificateRequest() {
             </div>
           </div>
           <div className="row form">
-            {type != "ROOT" && (<span className="details">Certificate Issuer</span>)}
-            {type != "ROOT" && (<AsyncSelect
+            {type !== "ROOT" && (<span className="details">Certificate Issuer</span>)}
+            {type !== "ROOT" && (<AsyncSelect
               className="basic-single"
               classNamePrefix="select"
               isSearchable="true"

@@ -8,7 +8,7 @@ function getRole() {
 }
 
 function logout() {
-    localStorage.removeItem("access_token");
+    // localStorage.removeItem("access_token");
   }
 
 export default getRole && logout;

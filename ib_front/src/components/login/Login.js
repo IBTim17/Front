@@ -22,9 +22,10 @@ function Login() {
   const [resValue, setResValue] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
-  
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   const phoneRegex = /^\d{10}$/;
 
   const [emailPhoneNumPlh, setEmailPhoneNumPlh] = useState("bob@ros.com");
@@ -75,31 +76,31 @@ function Login() {
       let valid_token = await verifyToken(token);
       if (valid_token) {
         setMessage("Hurray!! you have submitted the form");
-        
+        // setOpenTwoFactor(true);
         console.log(token);
         const loginRequest = {
           email: email,
           password: password,
-          resource: type
+          resource: type,
         };
-         if (!emailRegex.test(email)) {
-            alert('Please enter a valid email address.');
-            return;
-          }
+        if (!emailRegex.test(email)) {
+          alert("Please enter a valid email address.");
+          return;
+        }
 
-          if (!passwordRegex.test(password)) {
-            alert(
-              'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
-            );
-            return;
-          }
+        // if (!passwordRegex.test(password)) {
+        //   alert(
+        //     'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+        //   );
+        //   return;
+        // }
 
         loginUser(loginRequest)
           .then((response) => {
             // console.log(response);
             setOpenTwoFactor(true);
             localStorage.setItem("access_token", response.token);
-            navigate("/main", { replace: true });
+            // navigate("/main", { replace: true });
           })
           .catch((error) => {
             console.log(error.response.data);
@@ -131,20 +132,21 @@ function Login() {
   };
 
   function signInWithGoogle() {
-    window.location.href = window.location.href = "http://localhost:8080/oauth2/authorization/google?redirect_uri=http://localhost:3000/main"
+    window.location.href = window.location.href =
+      "http://localhost:8080/oauth2/authorization/google?redirect_uri=http://localhost:3000/main";
   }
 
   function sendCode(event) {
     event.preventDefault();
     const codeRequest = { resource: resValue };
 
-    if (resource === 'Email' && !emailRegex.test(resValue)) {
-      alert('Please enter a valid email address.');
+    if (resource === "Email" && !emailRegex.test(resValue)) {
+      alert("Please enter a valid email address.");
       return;
     }
 
-    if (resource === 'Phone Number' && !phoneRegex.test(resValue)) {
-      alert('Please enter a valid phone number (10 digits).');
+    if (resource === "Phone Number" && !phoneRegex.test(resValue)) {
+      alert("Please enter a valid phone number (10 digits).");
       return;
     }
 
@@ -165,8 +167,11 @@ function Login() {
     checkLoginCode(email, code)
       .then((response) => {
         console.log(response);
-        if (response.status === 200) navigate("/main", { replace: true });
-        else localStorage.removeItem("access_token");
+        if (response.status === 200) {
+          navigate("/main", { replace: true });
+        } else {
+          localStorage.removeItem("access_token");
+        }
       })
       .catch((error) => {
         localStorage.removeItem("access_token");
@@ -176,15 +181,15 @@ function Login() {
 
   function sendNewPassword(event) {
     event.preventDefault();
-    if (!passwordRegex.test(newPassword)) {
-      alert(
-        'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
-      );
-      return;
-    }
+    // if (!passwordRegex.test(newPassword)) {
+    //   alert(
+    //     'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+    //   );
+    //   return;
+    // }
 
     if (newPassword !== passwordRepeat) {
-      alert('Passwords do not match.');
+      alert("Passwords do not match.");
       return;
     }
 
@@ -309,7 +314,7 @@ function Login() {
               </span>
             </div>
           </div>
-          <div className="row" style={{margin: "5px"}}>
+          <div className="row" style={{ margin: "5px" }}>
             <ReCAPTCHA
               sitekey="6LeuCaQmAAAAAO-f1DVpM9aCjS2TMWxPGFFICF7c"
               ref={captchaRef}
@@ -318,7 +323,11 @@ function Login() {
               <input type="submit" value="Sign in" />
             </div>
             <div className="button">
-              <input  onClick={() => signInWithGoogle()} value="Continue with google" style={{textAlign:"center"}} />
+              <input
+                onClick={() => signInWithGoogle()}
+                value="Continue with google"
+                style={{ textAlign: "center" }}
+              />
             </div>
           </div>
           {error && <p className="textError">Error: {error}</p>}
@@ -354,7 +363,8 @@ function Login() {
         isOpen={renewal}
         contentLabel="Example Modal"
         onRequestClose={onCloseModal}
-        appElement={document.getElementById("root")}>
+        appElement={document.getElementById("root")}
+      >
         {!sentCode && (
           <div className="row form">
             <p className="title">Password renewal - 90. days passed</p>

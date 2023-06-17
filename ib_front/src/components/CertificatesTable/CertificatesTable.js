@@ -18,7 +18,7 @@ class CertificateTable extends React.Component {
     const queryParams = new URLSearchParams(window.location.search);
     if (queryParams.has("token") && queryParams.has("refresh_token")) {
       localStorage.setItem('access_token', queryParams.get("token"));
-      localStorage.setItem('refresh_token',queryParams.get("refresh_token"))
+      // localStorage.setItem('refresh_token',queryParams.get("refresh_token"))
     }
   }
 
