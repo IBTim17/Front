@@ -19,6 +19,9 @@ function Login() {
   const [passwordRepeat, setPasswordRepeat] = useState("");
   const [code, setCode] = useState("");
   const navigate = useNavigate();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const phoneRegex = /^\d{10}$/;
 
   function handleEmailChange(event) {
     setEmail(event.target.value);
@@ -66,6 +69,16 @@ function Login() {
     event.preventDefault();
     const codeRequest = {resource: resValue};
 
+    if (resource === 'Email' && !emailRegex.test(resValue)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+
+    if (resource === 'Phone Number' && !phoneRegex.test(resValue)) {
+      alert('Please enter a valid phone number (10 digits).');
+      return;
+    }
+
     resetPassword(codeRequest)
       .then(response => {
         console.log(response);
@@ -78,10 +91,18 @@ function Login() {
 
   function sendNewPassword(event) {
     event.preventDefault();
-    if (newPassword !== passwordRepeat) {
-      alert("Passwords don't match!");
+    if (!passwordRegex.test(newPassword)) {
+      alert(
+        'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+      );
       return;
     }
+
+    if (newPassword !== passwordRepeat) {
+      alert('Passwords do not match.');
+      return;
+    }
+
     const codeRequest = {email, code, newPassword};
 
     putNewPassword(codeRequest)
@@ -97,6 +118,17 @@ function Login() {
   }
 
   function login(event) {
+    if (!emailRegex.test(email)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      alert(
+        'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+      );
+      return;
+    }
     event.preventDefault();
     const loginRequest = {
       email,
