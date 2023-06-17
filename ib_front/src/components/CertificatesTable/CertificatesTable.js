@@ -56,7 +56,13 @@ class CertificateTable extends React.Component {
         },
       })
       .then((response) => this.setState({ certificates: response.data }))
-      .catch((error) => console.error("Error fetching certificates: ", error));
+      .catch((error) => {
+        // console.log("Error fetching certificates: ", error);
+        if (error.response.status === 401) {
+          localStorage.removeItem("access_token");
+          window.location.replace("/login");
+        }
+      });
   }
 
   handleCheckValidity = (serialNumber) => {
@@ -70,9 +76,13 @@ class CertificateTable extends React.Component {
         const valid = response.data;
         alert(valid ? "Certificate is valid!" : "Certificate is invalid!");
       })
-      .catch((error) =>
-        console.error(`Error checking certificate validity: ${error}`)
-      );
+      .catch((error) => {
+        console.error(`Error checking certificate validity: ${error}`);
+        if (error.response.status === 401) {
+          localStorage.removeItem("access_token");
+          window.location.replace("/login");
+        }
+      });
   };
 
   downloadCrt = (serialNumber) => {
@@ -109,9 +119,13 @@ class CertificateTable extends React.Component {
           console.log(e);
         }
       })
-      .catch((error) =>
-        console.error(`Error downloading certificate : ${error}`)
-      );
+      .catch((error) => {
+        console.error(`Error downloading certificate : ${error}`);
+        if (error.response.status === 401) {
+          localStorage.removeItem("access_token");
+          window.location.replace("/login");
+        }
+      });
   };
 
   revokeCrt = (serialNumber) => {
@@ -130,7 +144,13 @@ class CertificateTable extends React.Component {
         alert(response.data.message);
       })
       .catch((error) => {
-        alert(error.response.data.message);
+        {
+          alert(error.response.data.message);
+          if (error.response.status === 401) {
+            localStorage.removeItem("access_token");
+            window.location.replace("/login");
+          }
+        }
       });
   };
 
