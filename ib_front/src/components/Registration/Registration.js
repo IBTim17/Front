@@ -17,7 +17,7 @@ function Registration() {
   const navigate = useNavigate();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phoneRegex = /^\d{10}$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const captchaRef = useRef(null);
   const [message, setMessage] = useState("");
@@ -103,12 +103,12 @@ function Registration() {
       return false;
     }
 
-    if (!passwordRegex.test(user.password)) {
-      alert(
-        'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
-      );
-      return false;
-    }
+    // if (!passwordRegex.test(user.password)) {
+    //   alert(
+    //     'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+    //   );
+    //   return false;
+    // }
 
     if (user.password !== user.repeatedPassword) {
       alert('Passwords do not match.');
@@ -134,7 +134,7 @@ function Registration() {
       })
       .then((response) => {
         navigate("/main", { replace: true });
-        return response.data;
+        // return response.data;
       })
       .catch((error) => {
         alert("Code not correct!");
@@ -154,28 +154,28 @@ function Registration() {
   };
 
   return (
-    <html lang="en">
-      <head>
-        <title>Registration</title>
-        <meta charset="utf-8"></meta>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1"
-        ></meta>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-        <link
-          rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-        ></link>
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap"
-        ></link>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-      </head>
+    // <html lang="en">
+    //   <head>
+    //     <title>Registration</title>
+    //     <meta charset="utf-8"></meta>
+    //     <meta
+    //       name="viewport"
+    //       content="width=device-width, initial-scale=1"
+    //     ></meta>
+    //     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    //     <link
+    //       rel="stylesheet"
+    //       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    //     ></link>
+    //     <link
+    //       rel="stylesheet"
+    //       href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap"
+    //     ></link>
+    //     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    //     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    //   </head>
 
-      <body>
+    //   <body>
         <div className="container">
           <div className="col-sm-6 mottos">
             <div className="row">
@@ -204,10 +204,10 @@ function Registration() {
               <p className="sign-up">Sign up for CertifyHub</p>
             </div>
             <form onSubmit={handleSubmit}>
-              <div class="row">
-                <div class="col-sm-6">
-                  <div class="input-box">
-                    <span class="details">First name</span>
+              <div className="row">
+                <div className="col-sm-6">
+                  <div className="input-box">
+                    <span className="details">First name</span>
                     <input
                       type="text"
                       placeholder="Bob"
@@ -217,9 +217,9 @@ function Registration() {
                     />
                   </div>
                 </div>
-                <div class="col-sm-6">
-                  <div class="input-box">
-                    <span class="details">Last name</span>
+                <div className="col-sm-6">
+                  <div className="input-box">
+                    <span className="details">Last name</span>
                     <input
                       type="text"
                       placeholder="Ross"
@@ -254,10 +254,10 @@ function Registration() {
                   />
                 </div>
               </div>
-              <div class="row">
-                <div class="col-sm-6">
-                  <div class="input-box">
-                    <span class="details">Password</span>
+              <div className="row">
+                <div className="col-sm-6">
+                  <div className="input-box">
+                    <span className="details">Password</span>
                     <input
                       type="password"
                       placeholder="********"
@@ -267,9 +267,9 @@ function Registration() {
                     />
                   </div>
                 </div>
-                <div class="col-sm-6">
-                  <div class="input-box">
-                    <span class="details">Repeat password</span>
+                <div className="col-sm-6">
+                  <div className="input-box">
+                    <span className="details">Repeat password</span>
                     <input
                       type="password"
                       placeholder="********"
@@ -293,7 +293,7 @@ function Registration() {
               {message && <p className="textSuccess">Success: {message}</p>}
             </form>
             {showCode && (
-              <form onSubmit={confirm}>
+              <form onSubmit={handleSubmit}>
                 <div className="row">
                   <div className="input-box form">
                     <span className="details">Verification code:</span>
@@ -315,8 +315,8 @@ function Registration() {
             )}
           </div>
         </div>
-      </body>
-    </html>
+    //   </body>
+    // </html>
   );
 }
 

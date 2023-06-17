@@ -26,7 +26,7 @@ class AllCertificateRequests extends React.Component {
 
     fetchCertificateRequests() {
         axios
-            .get("http://localhost:8080/api/list-all", {
+            .get("http://localhost:8080/api/requests/list-all", {
                 headers: {
                     "x-auth-token": localStorage.getItem("access_token"),
                 },
@@ -43,7 +43,7 @@ class AllCertificateRequests extends React.Component {
 
     acceptCSR = (serialNumber) => {
         axios
-            .put(`http://localhost:8080/api/certificate/approve/${serialNumber}`, {
+            .put(`http://localhost:8080/api/requests/approve/${serialNumber}`, {
                 headers: {
                     "x-auth-token": localStorage.getItem("access_token"),
                 },
@@ -56,14 +56,14 @@ class AllCertificateRequests extends React.Component {
                 console.error(`Error approving certificate: ${error}`);
                 if (error.response.status === 401) {
                     localStorage.removeItem("access_token");
-                    window.location.replace("/login");
+                    // window.location.replace("/login");
                 }
             });
     };
 
     declineCSR = (serialNumber) => {
         axios
-            .put(`http://localhost:8080/api/certificate/decline/${serialNumber}`, {
+            .put(`http://localhost:8080/api/requests/decline/${serialNumber}`, {
                 headers: {
                     "x-auth-token": localStorage.getItem("access_token"),
                 },
@@ -77,7 +77,7 @@ class AllCertificateRequests extends React.Component {
                 console.error(`Error declining certificate: ${error}`);
                 if (error.response.status === 401) {
                     localStorage.removeItem("access_token");
-                    window.location.replace("/login");
+                    // window.location.replace("/login");
                 }
             });
     };

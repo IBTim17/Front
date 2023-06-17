@@ -23,10 +23,14 @@ function ValidateCertificateCopy() {
 
         const formData = new FormData();
         formData.append('file',selectedFile);
-
+        console.log("Ovdeeee");
         await axios
-            .post(`http://localhost:8080/api/certificate/isvalidcert`, formData)
+            .post(`http://localhost:8080/api/certificate/isvalidcert`, formData,
+                {headers: {
+                    'x-auth-token': localStorage.getItem('access_token')
+                }})
             .then((response) => {
+                console.log("Ovdeeee2");
                 setIsValidUpload(response.data);
                 setIsShownUpload(true);
             })
