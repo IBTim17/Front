@@ -15,6 +15,11 @@ class CertificateTable extends React.Component {
       isOpenAddModal: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    const queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.has("token") && queryParams.has("refresh_token")) {
+      localStorage.setItem('access_token', queryParams.get("token"));
+      localStorage.setItem('refresh_token',queryParams.get("refresh_token"))
+    }
   }
 
   handleReason = (event) => {
@@ -38,6 +43,11 @@ class CertificateTable extends React.Component {
     console.log(this.state.isOpenAddModal);
   };
 
+  logout = (event) => {
+    localStorage.removeItem("access_token");
+    window.location.replace("/login");
+  };
+
   componentDidMount() {
     axios
       .get("http://localhost:8080/api/certificate", {
@@ -46,7 +56,13 @@ class CertificateTable extends React.Component {
         },
       })
       .then((response) => this.setState({ certificates: response.data }))
-      .catch((error) => console.error("Error fetching certificates: ", error));
+      .catch((error) => {
+        // console.log("Error fetching certificates: ", error);
+        if (error.response.status === 401) {
+          localStorage.removeItem("access_token");
+          window.location.replace("/login");
+        }
+      });
   }
 
   handleCheckValidity = (serialNumber) => {
@@ -60,9 +76,13 @@ class CertificateTable extends React.Component {
         const valid = response.data;
         alert(valid ? "Certificate is valid!" : "Certificate is invalid!");
       })
-      .catch((error) =>
-        console.error(`Error checking certificate validity: ${error}`)
-      );
+      .catch((error) => {
+        console.error(`Error checking certificate validity: ${error}`);
+        if (error.response.status === 401) {
+          localStorage.removeItem("access_token");
+          window.location.replace("/login");
+        }
+      });
   };
 
   downloadCrt = (serialNumber) => {
@@ -99,9 +119,13 @@ class CertificateTable extends React.Component {
           console.log(e);
         }
       })
-      .catch((error) =>
-        console.error(`Error downloading certificate : ${error}`)
-      );
+      .catch((error) => {
+        console.error(`Error downloading certificate : ${error}`);
+        if (error.response.status === 401) {
+          localStorage.removeItem("access_token");
+          window.location.replace("/login");
+        }
+      });
   };
 
   revokeCrt = (serialNumber) => {
@@ -120,7 +144,13 @@ class CertificateTable extends React.Component {
         alert(response.data.message);
       })
       .catch((error) => {
-        alert(error.response.data.message);
+        {
+          alert(error.response.data.message);
+          if (error.response.status === 401) {
+            localStorage.removeItem("access_token");
+            window.location.replace("/login");
+          }
+        }
       });
   };
 
@@ -133,6 +163,11 @@ class CertificateTable extends React.Component {
               this.openAddModal();
             }}
           >Add</button>
+          <button style={{marginLeft: "15px"}}
+            id="addBtn" onClick={() => {
+              this.logout();
+            }}
+          >Logout</button>
           {this.state.isOpenAddModal && <CertificateRequest></CertificateRequest>}
           <table className="fl-table">
             <thead>
