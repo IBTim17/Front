@@ -133,6 +133,9 @@ a:hover {
   margin: auto;
 }
 
+label {
+  margin-left: 1em;
+}
 .title{
   margin: auto;
   text-align: center;

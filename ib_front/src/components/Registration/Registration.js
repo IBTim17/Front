@@ -15,6 +15,10 @@ function Registration() {
   const [verificationCode, setVerificationCode] = useState("");
   const [showCode, setShowCode] = useState(false);
   const navigate = useNavigate();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^\d{10}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
   const captchaRef = useRef(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -69,6 +73,9 @@ function Registration() {
             repeatedPassword: passwordRepeat,
           };
           console.log(user);
+          if (!validateRegistrationData(user)) {
+            return;
+          }
           registerUser(user)
             .then((response) => {
               setShowCode(true);
@@ -83,6 +90,32 @@ function Registration() {
         setError("You must confirm you are not a robot");
       }
     }
+  }
+
+  function validateRegistrationData(user) {
+    if (!emailRegex.test(user.email)) {
+      alert('Please enter a valid email address.');
+      return false;
+    }
+
+    if (!phoneRegex.test(user.phoneNumber)) {
+      alert('Please enter a valid phone number (10 digits).');
+      return false;
+    }
+
+    if (!passwordRegex.test(user.password)) {
+      alert(
+        'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+      );
+      return false;
+    }
+
+    if (user.password !== user.repeatedPassword) {
+      alert('Passwords do not match.');
+      return false;
+    }
+
+    return true;
   }
 
   function registerUser(user) {
