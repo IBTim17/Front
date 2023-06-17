@@ -1,0 +1,30 @@
+.title{
+    justify-items: center;
+}
+
+#search{
+    margin-left: 20px;
+}
+
+#miniTitle{
+    margin-left: 10px;
+}
+
+#formSearch{
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#formSearch input{
+    margin-left: 5px;
+}
+
+#buttons{
+    display: flex;
+    align-items: center;
+}
+#buttons button{
+    margin-left: 10px;
+}
+

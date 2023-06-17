@@ -12,10 +12,6 @@ function ValidateCertificateCopy() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileName,setFileName] = useState('')
 
-    // const handleFileChange = (event) => {
-    //     const file = event.target.files[0];
-    //     setSelectedFile(file);
-    // };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -54,7 +50,6 @@ function ValidateCertificateCopy() {
         if (fileExtension !== 'crt') {
             alert('The selected file must have a ".crt" extension');
             this.file = null;
-            //this.uploadValidity.get('upload').setValue(null);
             setSelectedFile(null);
             setFileName("");
             return;
@@ -63,8 +58,6 @@ function ValidateCertificateCopy() {
         if (fileUpload.size > MAX_FILE_SIZE_BYTES) {
             alert('File size is too large, please select a file smaller than 1GB.');
             this.file = null;
-            //this.get('upload').setValue(null);
-            //event.target.files[0] = null;
             setSelectedFile(null);
             setFileName("");
             return;
